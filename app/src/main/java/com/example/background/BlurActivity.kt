@@ -51,9 +51,14 @@ class BlurActivity : AppCompatActivity() {
         viewModel.imageUri?.let { imageUri ->
             Glide.with(this).load(imageUri).into(imageView)
         }
-
+    
+        setOnClickListeners()
     }
-
+    
+    private fun setOnClickListeners() {
+        goButton.setOnClickListener { viewModel.applyBlur(blurLevel) }
+    }
+    
     private fun bindResources() {
         imageView = findViewById(R.id.image_view)
         progressBar = findViewById(R.id.progress_bar)

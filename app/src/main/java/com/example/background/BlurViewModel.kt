@@ -19,13 +19,22 @@ package com.example.background
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import com.example.background.workers.BlurWorker
 
 
 class BlurViewModel(application: Application) : AndroidViewModel(application) {
-
+    
+    private val workManager = WorkManager.getInstance(application)
     internal var imageUri: Uri? = null
     internal var outputUri: Uri? = null
 
+    //kiroglue-1: viewModels are responsible from managing WorkManager and its helper classes
+    internal fun applyBlur(blurLevel: Int){
+        workManager.enqueue(OneTimeWorkRequest.from(BlurWorker::class.java))
+    }
+    
     private fun uriOrNull(uriString: String?): Uri? {
         return if (!uriString.isNullOrEmpty()) {
             Uri.parse(uriString)
@@ -45,3 +54,12 @@ class BlurViewModel(application: Application) : AndroidViewModel(application) {
         outputUri = uriOrNull(outputImageUri)
     }
 }
+
+/*
+kiroglue-2:
+There are a few WorkManager classes you need to know about:
+
+Worker: This is where you put the code for the actual work you want to perform in the background. You'll extend this class and override the doWork() method.
+WorkRequest: This represents a request to do some work. You'll pass in your Worker as part of creating your WorkRequest. When making the WorkRequest you can specify things like Constraints on when the Worker should run.
+WorkManager: This class actually schedules your WorkRequest and makes it run. It schedules WorkRequests in a way that spreads out the load on system resources, while honoring the constraints you specify.
+ */
