@@ -71,9 +71,14 @@ class BlurViewModel(application: Application) : AndroidViewModel(application) {
     
             continuation = continuation.then(blurBuilder.build())
         }
+    
+        val constraints = Constraints.Builder()
+                .setRequiresCharging(true)//kiroglue-6:can be added differen constraints
+                .build()
         
         val save = OneTimeWorkRequest
                 .Builder(SaveImageToFileWorker::class.java)
+                .setConstraints(constraints)
                 .addTag(TAG_OUTPUT) //kiroglue-4: We are tagging because we will get it with same tag later.
                 .build()
         
