@@ -1,3 +1,11 @@
+
+* This codelabs Kotlin version  originally is published here: https://codelabs.developers.google.com/codelabs/android-workmanager-kt/#0
+* The purpose of forked by me and upload github is to reach/archive easily and keep statistics of previous codelabs that I worked. I added my workouts "codelab_start_kt" branch.
+* There are some notes in project which starts with "kiroglu" prefix. Those are notes for me mostly based on codelab documentation.
+
+
+
+
 WorkManager Codelab
 ===================================
 
