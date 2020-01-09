@@ -24,6 +24,8 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.background.workers.BlurWorker
+import com.example.background.workers.CleanupWorker
+import com.example.background.workers.SaveImageToFileWorker
 
 
 class BlurViewModel(application: Application) : AndroidViewModel(application) {
@@ -39,10 +41,34 @@ class BlurViewModel(application: Application) : AndroidViewModel(application) {
     
     //kiroglue-1: dynamic uri selection
     internal fun applyBlur(blurLevel: Int){
-        val blurRequest = OneTimeWorkRequestBuilder<BlurWorker>()
+        
+        var continuation = workManager
+                .beginWith(OneTimeWorkRequest.from(CleanupWorker::class.java))
+        
+        
+        for(i in  0 until blurLevel){
+            val blurBuilder = OneTimeWorkRequestBuilder<BlurWorker>()
+    
+            // Input the Uri if this is the first blur operation
+            // After the first blur operation the input will be the output of previous
+            // blur operations.
+            if (i == 0) {
+                blurBuilder.setInputData(createInputDataForUri())
+            }
+    
+            continuation = continuation.then(blurBuilder.build())
+        }
+        
+/*        val blurRequest = OneTimeWorkRequest.Builder(BlurWorker::class.java)
                 .setInputData(createInputDataForUri())
                 .build()
-        workManager.enqueue(blurRequest)
+        continuation = continuation.then(blurRequest)
+        */
+        val save = OneTimeWorkRequest.Builder(SaveImageToFileWorker::class.java).build()
+        
+        continuation = continuation.then(save)
+    
+        continuation.enqueue()
     }
     
     private fun createInputDataForUri(): Data {
