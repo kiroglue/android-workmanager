@@ -72,11 +72,6 @@ class BlurViewModel(application: Application) : AndroidViewModel(application) {
             continuation = continuation.then(blurBuilder.build())
         }
         
-/*        val blurRequest = OneTimeWorkRequest.Builder(BlurWorker::class.java)
-                .setInputData(createInputDataForUri())
-                .build()
-        continuation = continuation.then(blurRequest)
-        */
         val save = OneTimeWorkRequest
                 .Builder(SaveImageToFileWorker::class.java)
                 .addTag(TAG_OUTPUT) //kiroglue-4: We are tagging because we will get it with same tag later.
