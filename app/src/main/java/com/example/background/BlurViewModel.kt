@@ -97,6 +97,10 @@ class BlurViewModel(application: Application) : AndroidViewModel(application) {
             null
         }
     }
+    //kiroglue-5: work can be canceled by its UniqueWorkName
+    internal fun cancelWork() {
+        workManager.cancelUniqueWork(IMAGE_MANIPULATION_WORK_NAME)
+    }
 
     /**
      * Setters
