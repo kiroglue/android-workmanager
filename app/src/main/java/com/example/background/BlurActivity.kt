@@ -24,6 +24,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.RadioGroup
+import androidx.lifecycle.Observer
+import androidx.work.WorkInfo
 import com.bumptech.glide.Glide
 
 
@@ -44,6 +46,7 @@ class BlurActivity : AppCompatActivity() {
 
         // Get the ViewModel
         viewModel = ViewModelProviders.of(this).get(BlurViewModel::class.java)
+        viewModel.outputWorkInfoItems.observe(this,workInfosObserver())
 
         // Image uri should be stored in the ViewModel; put it there then display
         val imageUriExtra = intent.getStringExtra(KEY_IMAGE_URI)
@@ -85,6 +88,20 @@ class BlurActivity : AppCompatActivity() {
         progressBar.visibility = View.GONE
         cancelButton.visibility = View.GONE
         goButton.visibility = View.VISIBLE
+    }
+    
+    private fun workInfosObserver(): Observer<List<WorkInfo>>{
+        return Observer {
+            if (it.isNullOrEmpty()){
+                return@Observer
+            }
+            val workInfo = it[0]
+            if (workInfo.state.isFinished){
+                showWorkFinished()
+            }else{
+                showWorkInProgress()
+            }
+        }
     }
 
     private val blurLevel: Int

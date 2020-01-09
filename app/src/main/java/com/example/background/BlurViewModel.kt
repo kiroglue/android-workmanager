@@ -19,6 +19,7 @@ package com.example.background
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.work.*
 import com.example.background.workers.BlurWorker
 import com.example.background.workers.CleanupWorker
@@ -27,9 +28,16 @@ import com.example.background.workers.SaveImageToFileWorker
 
 class BlurViewModel(application: Application) : AndroidViewModel(application) {
     
-    private val workManager = WorkManager.getInstance(application)
     internal var imageUri: Uri? = null
     internal var outputUri: Uri? = null
+    internal val outputWorkInfoItems: LiveData<List<WorkInfo>>
+    private val workManager: WorkManager = WorkManager.getInstance(application)
+    
+    init {
+        // This transformation makes sure that whenever the current work Id changes the WorkStatus
+        // the UI is listening to changes
+        outputWorkInfoItems = workManager.getWorkInfosByTagLiveData(TAG_OUTPUT)
+    }
 
     //kiroglue-1: viewModels are responsible from managing WorkManager and its helper classes
 /*    internal fun applyBlur(blurLevel: Int){
@@ -69,7 +77,10 @@ class BlurViewModel(application: Application) : AndroidViewModel(application) {
                 .build()
         continuation = continuation.then(blurRequest)
         */
-        val save = OneTimeWorkRequest.Builder(SaveImageToFileWorker::class.java).build()
+        val save = OneTimeWorkRequest
+                .Builder(SaveImageToFileWorker::class.java)
+                .addTag(TAG_OUTPUT) //kiroglue-4: We are tagging because we will get it with same tag later.
+                .build()
         
         continuation = continuation.then(save)
     
