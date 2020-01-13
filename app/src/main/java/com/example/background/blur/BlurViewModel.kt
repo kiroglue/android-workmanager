@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-package com.example.background
+package com.example.background.blur
 
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.work.*
+import com.example.background.IMAGE_MANIPULATION_WORK_NAME
+import com.example.background.KEY_IMAGE_URI
+import com.example.background.TAG_OUTPUT
 import com.example.background.workers.BlurWorker
 import com.example.background.workers.CleanupWorker
 import com.example.background.workers.SaveImageToFileWorker
+import javax.inject.Inject
 
 
-class BlurViewModel(application: Application) : AndroidViewModel(application) {
+class BlurViewModel @Inject constructor(application: Application) : AndroidViewModel(application) {
     
     internal var imageUri: Uri? = null
     internal var outputUri: Uri? = null

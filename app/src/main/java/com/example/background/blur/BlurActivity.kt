@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.background
+package com.example.background.blur
 
 import android.content.Intent
 import androidx.lifecycle.ViewModelProviders
@@ -28,11 +28,17 @@ import android.widget.RadioGroup
 import androidx.lifecycle.Observer
 import androidx.work.WorkInfo
 import com.bumptech.glide.Glide
+import com.example.background.KEY_IMAGE_URI
+import com.example.background.MyApplication
+import com.example.background.R
+import javax.inject.Inject
 
 
 class BlurActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: BlurViewModel
+    @Inject
+    lateinit var viewModel: BlurViewModel
+    
     private lateinit var imageView: ImageView
     private lateinit var progressBar: ProgressBar
     private lateinit var goButton: Button
@@ -40,13 +46,14 @@ class BlurActivity : AppCompatActivity() {
     private lateinit var cancelButton: Button
     private lateinit var radioGroup: RadioGroup
 
+    
     override fun onCreate(savedInstanceState: Bundle?) {
+        (application as MyApplication).appComponent.BlurComponent().create().inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_blur)
         bindResources()
 
         // Get the ViewModel
-        viewModel = ViewModelProviders.of(this).get(BlurViewModel::class.java)
         viewModel.outputWorkInfoItems.observe(this,workInfosObserver())
 
         // Image uri should be stored in the ViewModel; put it there then display

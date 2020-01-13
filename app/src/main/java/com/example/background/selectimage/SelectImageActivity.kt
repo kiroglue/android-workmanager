@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.background
+package com.example.background.selectimage
 
 import android.Manifest
 import android.app.Activity
@@ -29,6 +29,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
+import com.example.background.KEY_IMAGE_URI
+import com.example.background.R
+import com.example.background.blur.BlurActivity
 
 import java.util.Arrays
 
